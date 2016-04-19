@@ -34,9 +34,109 @@ Recurrent neural networks 是非常自然的建模序列方法
 一个很长的时间段内，他们有能力去记忆信息在他们的隐藏状态。
 -但它很难培养他们利用这种潜力。
 
+-------
+Symmetrically connected networks
+
+对称链接网络
+和周期网络一样，但他们在units之间连接的是对称的（她们有相同的权重在both directions 双向上）
+-比起recurrent network， symemetric networks 更容易去分析
+-他们也更制约了他们能做什么。因为他们服从的能量函数。
+ Eg.they can’t model cycles.
+
+•Symmetrically connected nets without hidden units are called “Hopfield(人名) nets”.
+——————————
+Symmetrically connected networks with hidden units 
+•These are called “Boltzmann machines”.
+–They are much more powerful models than Hopfield nets.
+–They are less powerful than recurrent neural networks.
+–They have a beautifully simple learning algorithm.
 
 
+2b-The first generation of neural networks 
+
+标准范式统计模式识别
+1.转换将原始输入矢量成特征的激活的载体。
+使用基于常识性的手写程序定义的功能。
+2.了解如何权衡各功能的激活拿到一个标量。
+3.如果这个数量超过一定水平，决定了输入向量是目标类的一个积极的榜样。
+如果这个数量超过一定水平，决定了输入向量是目标类的一个积极的榜样。
+____
+Binary threshold neurons(decision units)
+
+•McCulloch-Pitts (1943)
+–First compute a weighted sum of the inputs from other neurons (plus a bias).
+–Then output a 1 if the weighted sum exceeds zero.
+
+How to learn biases using the same rule
+as we use for learning weights
+
+如何使用相同的规则来学习的bias，依照我们使用的学习权重
+•A threshold is equivalent to having a negative bias.
+•We can avoid having to figure out a separate learning rule for the bias by using a trick:
+
+
+
+–A bias is exactly equivalent to a weight on an extra input line that always has an activity of 1.
+–We can now learn a bias as if it were a weight. 
+翻译：
+A bias 是完全等同于一个重量上总有1的活动额外的输入线。
+现在我们可以了解到 a bias 就好像它是一个权重。
+
+
+感知机收敛perceptron convergence 过程：培训二进制输出神经元的分类
+
+添加一个额外的组。件值为1每个输入向量。这个组件上的“bias”重量减去阈值。现在，我们可以忘记的阈值
+挑选使用，确保每一次训练情况都被选中任何政策的培训情况。如果输出设备是正确的，先不谈其权重。
+如果输出单元不正确地输出零，输入矢量添加到权重向量。
+如果输出单元不正确地输出一个1 ，减去权重向量的输入矢量。
+这是保证找到一组权重，获取正确的答案对于所有的训练情况下，如果任何此类集合存在。
+
+Lecture 2c
+警告
+如果你不习惯在高维空间想着超平面，现在是学习时间。
+为了应对超平面在一个14维空间，可视化的三维空间，并说“十四”自己很大声。每个人做的。
+
+•But remember that going from 13-D to 14-D creates as much extra complexity as going from 2-D to 3-D. 
+
+
+
+重量空间
+•This space has one dimension per weight.
+
+
+在空间中的点代表了所有的权重的一个特定设置。
+假设我们已经消除阈值时，每个训练情况下，可以表示为通过原点的超平面。
+-权重必须位于该超平面的一侧，以获得正确的答案。
+
+
+
+为了让所有的训练情况下，正确的，我们需要找到的所有飞机右侧的一个点。
+可能没有任何这样的点！
+如果有任何权重向量是得到所有情况下正确的答案，他们落在Hyper-锥形，其在原点顶点。
+所以，两个很好的权重向量的平均值是一个很好的权重向量。
+•The problem is convex（凸面体）.
+
+
+
+
+2d-Why the learning works 
+
+每次感知器犯了错误，学习算法将当前权重向量接近一切可行权重向量。
+
+
+
+
+
+
+
+
+–Every time the perceptron makes a mistake, the squared distance to all of these generously feasible weight vectors is always decreased by at least the squared length of the update vector.
+
+翻译： 每次感知器出错，所有这些丰富宽大（generously ）可行的（feasible）权向量总是减小 by 最小的更新向量的平方长度。
+
+True: assuming the input and weights are finite, just because a set of inputs has a feasible space does not mean that they also have a generously feasible space.
 
 
 4817
+
 
