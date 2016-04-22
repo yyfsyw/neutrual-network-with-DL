@@ -63,3 +63,35 @@ As result, we obtain significant speed-up: Our GPU implementation computes 512×
 
 The key limitation, of course, is to precompute the feed-forward convolutional network for each texture style. Nonetheless, this is still an attractive trade-off for many potential applications, for example from the area of artistic image or video stylization. We explore some of these applications in our experiments.
 主要的限制，当然，是预先计算用于每个纹理样式前馈卷积网络。尽管如此，这仍是一个有吸引力的代价在许多潜在的应用，例如从艺术图像或视频的风格化的区域。我们探讨一些在我们的实验中的这些应用程序。
+
+2 Related Work 
+Deconvolutional neural networks have been introduced to visualize deep features and object classes. Zeiler et al. 
+解卷积神经网络已推出可视化功能深度和对象类。
+[37] back-project neural activations to pixels. Mahendran et al. [23] reconstruct images from the neural encoding in intermediate layers. Recently, effort are made to improve the efficiency and accuracy of deep visualization [36,26]. 
+背部神经的项目激活像素。Mahendran et al. [23]在中间层的神经编码重建图像。近来，贡献努力都是为了提高深度可视[36,26]的效率和准确性。
+Mordvintsev et al. have raised wide attention by showing how deconvolution of class-specifc activations can create hallucinogenic imagery from discriminative networks [25]. 
+Mordvintsev et al已通过展示类特殊的激活的卷积如何创建判别网络[25]致幻图像提出了广泛的关注。
+The astonishing complexity of the obtained visual patterns has immediately spurred hope for new generative models: 
+所获得的视觉模式的惊人的复杂性立刻刺激了对新生成的模型的希望：
+Gatys et al. [8,7] drove deconvolution by global covariance statistics of feature vectors on higher network layers, obtaining unprecedented results in artistic style transfer. 
+Gatys et al. [8,7] 驾驶去卷积通过特征向量的协方差全球统计上更高的网络层，在获得艺术风格转移上得到了前所未有的成果。
+The statistical model has some limitations: Enforcing per-feature-vector statistics permits a mixing of feature patterns that never appear in actual images and limit plausibility of the learned texture. 
+统计模型有一定的局限性：强制每个特征矢量统计允许，从来没有出现在实际的图像和限制了解到质感合理性特征模式的混合。
+This can be partially addressed by replacing point-wise feature statistics by statistics of spatial patches of feature activations [21]. 
+这可以通过功能激活[21]的空间补丁统计替代逐点特征的统计数据得到部分解决。
+This permits photo-realistic synthesis in some cases, but also reduces invariance because the simplistic dictionary of patches introduces rigidity. 
+这使得在某些情况下，照片般逼真的合成，同时也降低了因不变性色块的简单的字典引入刚性。
+On the theory side, Xie et al. [34] have proved that a generative random field model can be derived from used discriminative networks, and show applications to unguided texture synthesis. 
+在理论方面，Xie et al.  [34]已经证明，生成随机场模型可以用来判别网络中得到，并显示应用制导纹理合成。
+Full image methods employ specially trained auto-encoders as generative networks [16]. For example, the Generative Adversarial Networks (GANs) use two networks, one as the discriminator and other as the generator, to iteratively improve the model by playing a minimax game [10]. 
+完整映像方法使用经过专门培训的自动编码器作为网络生成[16]。例如，生成对抗性网络(GANs)使用两个网络，一个作为鉴别器等作为发电机，通过播放一个极小游戏[10]以迭代改进模型。
+
+This model is extended to work with a Laplacian pyramid [9], and with a conditional setting [3]. Very recently, Radford et al. [29] propose a set of architectural refinements 3 that stabilized the performance of this model, and show that the generators have vector arithmetic properties. One important strength of adversarial networks is that it offers perceptual metrics [20,4] that allows auto-encoders to be training more efficiently. 
+该模型被扩展为一个拉普拉斯金字塔[9]的工作，并与一个条件设定[3]。最近，Radford et al [29]提出一套建筑精炼3是稳定该模型的性能，并表明，该发声器具有矢量算术性质。对抗网络的一个重要优势在于，它提供了感知指标[20,4]，允许自动编码器，可以更有效的培训。
+
+These models can also be augmented semantic attributes [35], image captions [24], 3D data [5,17], spatial/temporal status [11,13,27] etc. In very recent, two concurrent work, Ulyanov et al. [32] and Johnson et al. [14] propose fast implementations of Gatys et al’s approach. Both of their methods employ precomputed decoders trained with a perceptual texture loss and obtain significant run-time benefits (higher decoder complexity reduces their speed-up a bit). 
+这些模型也可以增强语义属性[35]，图象字幕[24]，3D数据[5,17]，空间/时间状态[11,13,27]等。在非常近，两个并行工作，Ulyanov et al. [32]和Johnson。 [14]提出Gatys et al的做法的快速实现。无论他们的方法雇用一个感性的质感损失训练有素的预先计算的解码器，并获得显著运行时的好处（高解码器复杂降低了他们的一点儿速度了）。
+
+The main conceptual difference in our paper is the use of Li et al.’s [21] feature-patch statistics as opposed to learning Gaussian distributions of individual feature vectors, which provides some benefits in terms of reproducing textures more faithfully. 3 strided convolution, ReLUs, batch normalization, removing fully connected layers 4 Chuan Li and Michael Wand Fig. 1: Motivation: real world data does not always comply with a Gaussian distribution (first), but a complex nonlinear manifold (second). We adversarially learn a mapping to project contextually related patches to that manifold.
+
+在我们的纸张的主要概念上的差异是使用Li的[21]的功能的补丁统计，而不是学习个体特征向量，这在更忠实地再现纹理方面提供了一些好处的高斯分布。 3 跨入卷积，ReLUs，一批规范化，消除完全连接层4Chuan Li and Michael Wand Fig. 1：动机：现实世界的数据并不总是遵守高斯分布的（第一），而是一个复杂的非线性歧管（第二）。我们建议性的学习映射到项目上下文相关的补丁到更多样化的方面。
