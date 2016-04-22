@@ -1,0 +1,65 @@
+1 Introduction
+Image synthesis is a classical problem in computer graphics and vision [6,33].
+图像合成是计算机图形和视觉经典问题
+The key challenges are to capture the structure of complex classes of images in a concise, learnable model, and to find efficient algorithms for learning such models and synthesizing new image data. 
+关键的挑战是捕捉复杂的类图像的结构，简洁，可以学习的模式，找到学习这种模式，合成新的图像数据有效的算法。
+Most traditional “texture synthesis” methods address the complexity constraints using Markov random field (MRF) models that characterize images by statistics of local patches of pixels. 
+大多数传统的“纹理合成”的方法解决使用由像素当地补丁统计表征图像马尔可夫随机场（MRF）模型的复杂性约束。
+Recently, generative models based on deep neural networks have shown exciting new perspectives for image synthesis [10,8,11]. 
+近年来对于图像合成，基于深层神经网络生成模型显示令人兴奋的新视角.
+Deep architectures capture appearance variations in object classes beyond the abilities of pixel-level approaches. 
+深架构捕捉外观变化超出像素级办法的能力，对象类。
+However, there are still strong limitations of how much structure can be learned from limited training data.
+然而，现在还是有很强的限制在有多少结构可以从被限制的训练数据中被学习到
+This currently leaves us with two main classes of “deep” generative models: 1) full-image models that generate whole images [10,3], and 2) Markovian models that also synthesize textures [8,21]. 
+
+这个目前我们留下的“深度”生成模型的两个主要的类：1）全图像的模型，生成整体图像[10,3]，以及2）马尔可夫模型还可以合成纹理[8,21]。
+
+The first class, full-image models, are often designed as specially trained auto-encoders [16,11]. Results are impressive but limited to rather small images arXiv:1604.04382v1 [cs.CV] 15 Apr 2016 2 Chuan Li and Michael Wand (typically around 64×64 pixels) with limited fidelity in details. 
+第一类，全图像模式，往往设计成受过专门训练的自动编码器。
+结果是令人印象深刻，但仅限于相当小的arXiv图片：1604.04382v1[cs.CV]2016年4月15日2 Chuan Li and Michael Wand（通常约为64×64像素）的细节有限的保真度。
+
+The second class, the deep Markovian models, capture the statistics of local patches only and assemble them to high-resolution images. 
+第二类，深马尔可夫模型，仅捕获本地补丁的统计数据，并将它们组装到高分辨率的图像。
+
+Consequently, the fidelity of details is good, but additional guidance is required if non-trivial global structure should be reproduced [6,12,1,8,21]. Our paper addresses this second approach of deep Markovian texture synthesis. 
+
+因此，细节的保真度是好的，但需要更多的指导，如果不平凡的全球性结构应该被复制[6,12,1,8,21]。 我们的论文涉及深度马尔可夫纹理合成的第二种方法。
+
+
+
+Previous neural methods of this type [8,21] are built upon a deconvolutional framework [37,25]. This naturally provides blending of patches and permits reusing the intricate, emergent multi-level feature representations of large, discriminatively trained neural networks like the VGG network [30], repurposing them for image synthesis.
+
+这种类型[8,21]以前的神经方法是在解卷积框架[37,25]。这自然提供补丁和许可证重用复杂，新兴的多层次特征，如VGG网[30]，有区别地训练的神经网络，再利用他们为图像合成的表示混合。
+
+ As a side note, we will later observe that this is actually crucial for high-quality result (Figure 10). 
+作为一个侧面说明，我们将在后面看到，这其实是对高品质的结果至关重要
+Gatys et al. [8] pioneer this approach by modeling patch statistics with a global Gaussian models of the higher-level feature vectors, and Li et al. 
+
+Gatys et al.  [8]通过与更高级别的特征向量的一个全球性的高斯模型建模补丁统计先驱这种方法，and Li et al. 
+
+[21] utilize dictionaries of extended local patches of neural activation, trading-off flexibility for visual realism. 
+利用神经激活的扩展本地补丁词典，视觉逼真交易截止灵活性.
+
+Deep Markovian models are able to produce remarkable visual results, far beyond traditional pixel-level MRF methods. 
+深度马尔可夫模型是能够产生显着的视觉效果，远远超出了传统的像素级MRF方法。
+Unfortunately, the run-time costs of the deconvolution approach are still very high, requiring iterative back-propagation in order to estimate a pre-image (pixels) of the feature activations (higher network layer). 
+不幸的是，去卷积方法的运行时间的成本仍然非常高，需要迭代反向传播，以便估计一个预先的图像的特征的激活（像素）（较高网络层）。
+
+In the most expensive case of modeling MRFs of higher-level feature patches [21], a high-end GPU needs several minutes to synthesize low-resolution images (such as a 512-by-512 pixels image). 
+在建模更高级别的功能的补丁[21]的回收设施的最昂贵的情况下，一个高端GPU需要几分钟来合成低分辨率图像（例如，512×512像素的图像）。
+
+The objective of our paper is therefore to improve the efficiency of deep Markovian texture synthesis. 
+因此，我们本文的目的是为了提高深马尔可夫纹理合成的效率。
+The key idea is to precompute the inversion of the network by fitting a strided 1 convolutional network [31,29] to the inversion process, which operates purely in a feed-forward fashion. 
+关键思想是通过拟合跨入1卷积网络[31,29]的反向过程，它在一个前馈方式纯粹操作以预先计算的网络的反转。
+Despite being trained on patches of a fixed size, the resulting network can generate continuous images of arbitrary dimension without any additional optimization or blending, yielding a high-quality texture synthesizer of a specific style and high performance 2 . 
+尽管在一个固定大小的补丁被训练，将所得网络可以产生任意大小的连续图像，而无需任何额外的优化或掺合，得到的特定样式和2的性能高的高品质的纹理合成器。
+We train the convolutional network using adversarial training [29], which permits maintaining image quality similar to the original, expensive optimization approach. 
+我们使用对抗性训练[29]，其允许保持类似于原始的，昂贵的优化方法的图像质量训练卷积网络。
+
+As result, we obtain significant speed-up: Our GPU implementation computes 512×512 images within 40ms (on an nVidia TitanX). 
+作为结果，我们得到显著加速：我们的GPU计算实现40毫秒内512×512的图像（在Nvidia的TitanX）。
+
+The key limitation, of course, is to precompute the feed-forward convolutional network for each texture style. Nonetheless, this is still an attractive trade-off for many potential applications, for example from the area of artistic image or video stylization. We explore some of these applications in our experiments.
+主要的限制，当然，是预先计算用于每个纹理样式前馈卷积网络。尽管如此，这仍是一个有吸引力的代价在许多潜在的应用，例如从艺术图像或视频的风格化的区域。我们探讨一些在我们的实验中的这些应用程序。
