@@ -95,3 +95,21 @@ These models can also be augmented semantic attributes [35], image captions [24]
 The main conceptual difference in our paper is the use of Li et al.’s [21] feature-patch statistics as opposed to learning Gaussian distributions of individual feature vectors, which provides some benefits in terms of reproducing textures more faithfully. 3 strided convolution, ReLUs, batch normalization, removing fully connected layers 4 Chuan Li and Michael Wand Fig. 1: Motivation: real world data does not always comply with a Gaussian distribution (first), but a complex nonlinear manifold (second). We adversarially learn a mapping to project contextually related patches to that manifold.
 
 在我们的纸张的主要概念上的差异是使用Li的[21]的功能的补丁统计，而不是学习个体特征向量，这在更忠实地再现纹理方面提供了一些好处的高斯分布。 3 跨入卷积，ReLUs，一批规范化，消除完全连接层4Chuan Li and Michael Wand Fig. 1：动机：现实世界的数据并不总是遵守高斯分布的（第一），而是一个复杂的非线性歧管（第二）。我们建议性的学习映射到项目上下文相关的补丁到更多样化的方面。
+
+
+3 Model
+让我们首先在概念上刺激我们的方法。以统计为基础的方法[8,32]作为匹配源（输入照片或噪声信号）和目标分布（纹理）与高斯模型（图1，第一个）。结果一旦两个分布相匹配，它们就不进一步提高了。然而，现实世界的数据并不总是遵守高斯分布。 举例来说，，它可以按照一个复杂的非线性流形合成物。对抗性训练[10]可以识别这种判别的网络（图1，2），并加强其生成的动力并在合成物的投影（图1，第三）。我们提高对抗培养具有相应的上下文马尔可夫补丁（图1，4）。这使得学习专注于不同的描绘之间的映射在同样的环境下，而不是环境和描写的混合物。
+
+	图2，可视化传输途径，它扩展了基于补丁合成Li et al的算法。 [21]。我们先更换自己的补丁字典（包括迭代最近邻的搜索）并用连续判别网络D（绿色区块），学会区分在VGG19实际功能的补丁（上VGG19层Relu3 1，紫色块）从不适当地合成中得到。 一秒的对比（D下面的传输管道）与VGG19在同一图像上编码越高，更抽象层Relu5 1可以任选用于指导。 要是我们在VGG网络上运行反褶积（从鉴别和可选从引导内容），我们得到解卷积图像合成器，其中我们称之为马尔可夫解卷积对抗性网络（MDANs）。
+
+MDANs依然很慢;因此，我们的目标额外生成的网络G（蓝色块;一跨入卷积网络）。它需要一个VGG19层Relu41的图像的编码，并将其直接解码，以的象素合成图像。在所有的训练，我们不改变VGG19网（灰色块）只有优化D和G.重要的是，D和G为同时锻炼最大化G的质量; D这里的行为作为敌手G.我们通过马尔可夫生成对抗性表示整体架构网络（MGANs）。
+
+
+3.1 Markovian Deconvolutional Adversarial Networks (MDANs)
+我们MDANs合成纹理与被驱动解卷积过程通过对抗训练：一个判别网络D（图2绿色区）被训练从合成采样的“神经补丁”来区分图像和示例图像采样。我们使用的层规则采样VGG19输出（紫色块）relu31。它输出一个分类评分S =±1每个神经补丁，表示“真正的”补丁是如何（有S =1是真实的）。从合成图像采样每个补丁，1 - s是它的质地损失最小化。解卷积过程背传播这方面的损失为像素。 像Radford等 [29]我们使用批处理正常化（BN）和漏的ReLU（LReLU）改善D的培训。
+
+（it is not easy to translate for users to read pls follow http://arxiv.org/pdf/1604.04382v1.pdf）
+Formally, we denote the example texture image by xt ∈ R wt×ht , and the synthesized image by x ∈ R w×h . We initialize x with random noise for un-guided synthesis, or an content image xc ∈ R w×h for guided synthesis. The deconvolutio iteratively updates x so the following energy is minimized: x = arg min x Et(Φ(x), Φ(xt)) + α1Ec(Φ(x), Φ(xc)) + α2Υ(x) (1) Here Et denotes the texture loss, in which Φ(x) is x’s feature map output from layer relu3 1 of VGG 19. We sample patches from Φ(x), and compute Et as the Hinge loss with their labels fixed to one: Et(Φ(x), Φ(xt)) = 1 N X N i=1 max(0, 1 − 1 × si) (2)
+
+
+
